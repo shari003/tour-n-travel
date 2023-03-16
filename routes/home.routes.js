@@ -5,7 +5,7 @@ const router = express.Router();
 router.get("/", async(req, res) => {
     try{
         const user = req.user;
-        res.render('./home', {
+        res.render('home.ejs', {
             display: user,
         });
     }catch(e){

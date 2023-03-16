@@ -34,12 +34,23 @@ app.use(logger("dev"));
 app.use(cors());
 
 // EJS & Public
-app.use(express.static(path.join(__dirname + './public')));
-const viewsPath = path.join(__dirname, './views') 
-app.set('view engine', 'ejs');
-app.set('views', viewsPath)
+// app.use(express.static(path.join(__dirname + './public')));
+// const viewsPath = path.join(__dirname, './views') 
+// app.set('view engine', 'ejs');
+// app.set('views', viewsPath)
 app.use(express.static("public"));
 app.use(expressLayouts);
+
+// Require static assets from public folder
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Set 'views' directory for any views 
+// being rendered res.render()
+app.set('views', path.join(__dirname, 'views'));
+
+// Set view engine as EJS
+app.engine('ejs', require('ejs').renderFile);
+app.set('view engine', 'ejs');
 
 // Express body parser
 app.use(express.urlencoded({ extended: true }));
