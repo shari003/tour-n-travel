@@ -18,39 +18,23 @@ const app = express();
 // Passport Config (local)
 require('./config/passport')(passport);
 
-// Passport Config (Google OAuth 2.0)
-// require("./config/passport-oauth-google")(passport);
-
-// mongoose
-//   .connect(
-//     process.env.MONGO_URI,
-//     { useNewUrlParser: true ,useUnifiedTopology: true, useFindAndModify: false}
-//   )
-//   .then(() => console.log('MongoDB Connected'))
-//   .catch(err => console.log(err));
-
 // Loggers
 app.use(logger("dev"));
 app.use(cors());
 
 // EJS & Public
-// app.use(express.static(path.join(__dirname + './public')));
-// const viewsPath = path.join(__dirname, './views') 
-// app.set('view engine', 'ejs');
-// app.set('views', viewsPath)
-app.use(express.static("public"));
 app.use(expressLayouts);
 
 // Require static assets from public folder
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, './public')));
 
 // Set 'views' directory for any views 
 // being rendered res.render()
-app.set('views', path.join(__dirname, 'views'));
-
 // Set view engine as EJS
-app.engine('ejs', require('ejs').renderFile);
+const viewsPath = path.join(__dirname, "./views")
+app.set('views', viewsPath);
 app.set('view engine', 'ejs');
+// app.engine('ejs', require('ejs').renderFile);
 
 // Express body parser
 app.use(express.urlencoded({ extended: true }));
@@ -148,4 +132,3 @@ process.on("unhandledRejection", (err) => {
   });
 });
 
-// app.listen(PORT, console.log(`Server running on  ${PORT}`));
