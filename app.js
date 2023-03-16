@@ -3,10 +3,15 @@ const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const logger = require("morgan");
+const cors = require("cors");
 const flash = require('connect-flash');
 const session = require('express-session');
 
 const methodOverride = require("method-override");
+
+
+const PORT = process.env.PORT ?? 3000;
 
 const app = express();
 
@@ -16,19 +21,20 @@ require('./config/passport')(passport);
 // Passport Config (Google OAuth 2.0)
 // require("./config/passport-oauth-google")(passport);
 
-// Connect to MongoDB
-mongoose
-  .connect(
-    process.env.MONGO_URI,
-    { useNewUrlParser: true ,useUnifiedTopology: true, useFindAndModify: false}
-  )
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.log(err));
+// mongoose
+//   .connect(
+//     process.env.MONGO_URI,
+//     { useNewUrlParser: true ,useUnifiedTopology: true, useFindAndModify: false}
+//   )
+//   .then(() => console.log('MongoDB Connected'))
+//   .catch(err => console.log(err));
 
 // EJS
+app.use(logger("dev"));
 app.use(express.static("public"));
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
+app.use(cors());
 
 // Express body parser
 app.use(express.urlencoded({ extended: true }));
@@ -94,6 +100,36 @@ app.use('*', (req, res) => {
     });
 });
 
-const PORT = process.env.PORT || 3000;
+// Connect to MongoDB
+const connectDB = require("./config/db.config");
 
-app.listen(PORT, console.log(`Server running on  ${PORT}`));
+connectDB()
+  .then(() => {
+    console.log("CONNECTED TO DATABASE!");
+
+    app.listen(PORT, () => {
+      console.log(`Server Started at PORT: ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+    console.log("Not Connected to database");
+  });
+
+  //Handling Uncaught Exception
+process.on("uncaughtException", (err) => {
+  console.log(`Error: ${err.message}`);
+  console.log("Shutting Down Server due to Uncaught Exception");
+  process.exit(1);
+});
+
+//Unhandled Promise Rejection
+process.on("unhandledRejection", (err) => {
+  console.log(`Error: ${err.message}`);
+  console.log("Shutting Down Server due to Unhandled Promise Rejection");
+  server.close(() => {
+    process.exit(1);
+  });
+});
+
+// app.listen(PORT, console.log(`Server running on  ${PORT}`));
