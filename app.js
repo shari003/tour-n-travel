@@ -7,9 +7,9 @@ const logger = require("morgan");
 const cors = require("cors");
 const flash = require('connect-flash');
 const session = require('express-session');
+const path = require("path");
 
 const methodOverride = require("method-override");
-
 
 const PORT = process.env.PORT ?? 3000;
 
@@ -29,12 +29,17 @@ require('./config/passport')(passport);
 //   .then(() => console.log('MongoDB Connected'))
 //   .catch(err => console.log(err));
 
-// EJS
+// Loggers
 app.use(logger("dev"));
+app.use(cors());
+
+// EJS & Public
+app.use(express.static(path.join(__dirname + './public')));
+const viewsPath = path.join(__dirname, './views') 
+app.set('view engine', 'ejs');
+app.set('views', viewsPath)
 app.use(express.static("public"));
 app.use(expressLayouts);
-app.set('view engine', 'ejs');
-app.use(cors());
 
 // Express body parser
 app.use(express.urlencoded({ extended: true }));
