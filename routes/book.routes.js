@@ -17,4 +17,18 @@ router.get("/", async(req, res) => {
     }
 });
 
+router.post('/', async(req, res) => {
+    try{
+        const user = req.user;
+        res.send(req.body);
+    }
+    catch(e){
+        res.status(500).json({
+            success: false,
+            message: "Some Error Occurred !!",
+            data: "Some Error Occurred !!"
+        });
+    }
+});
+
 module.exports = router;

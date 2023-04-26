@@ -16,5 +16,6 @@ router.get("/", async(req, res) => {
         });
     }
 });
+// mongodb+srv://admin-shri:yPvk6QIA2OgnMIgm@cluster0.rc4y9.mongodb.net/tourntravelDB?retryWrites=true&w=majority
 
 module.exports = router;
